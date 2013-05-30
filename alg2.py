@@ -52,7 +52,8 @@ class SiftMatcher:
 		try:
 			subprocess.check_call([self._siftfeat, filename, '-o'+basename+'.sift', '-x'], stderr=devNull)
 		except subprocess.CalledProcessError:
-			pass
+			print 'Cannot open file'
+			return ()
 		
 		for group, files in self._features.iteritems():
 			for file in files:
@@ -61,6 +62,7 @@ class SiftMatcher:
 					matches[group].add(val)
 				except subprocess.CalledProcessError:
 					pass
+		os.remove(basename + '.sift')
 		return self._findBestMatch(matches)
 
 
