@@ -1,5 +1,6 @@
 Intro
 =====
+Car Brand Recognition System.
 Fork made for purposes of Knowledge-Based Systems course.
 
 Installation on Ubuntu 12.04
