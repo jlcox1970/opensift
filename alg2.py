@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, subprocess
+import os, sys, subprocess
 
 class Averager:
 	def __init__(self):
 		self._sum = 0
-		self.count = 0
+		self._count = 0
 		
 	def add(self, val):
 		self._sum += val
-		self.count += 1
+		self._count += 1
 	
 	def avg(self):
-		return self._sum / self.count if self.count > 0 else 0
+		return self._sum / self._count if self._count > 0 else 0
 
 class SiftMatcher:
 	def __init__(self, databaseDirectory):
@@ -59,6 +59,5 @@ class SiftMatcher:
 
 if __name__ == '__main__':
 	matcher = SiftMatcher('CB')
-	carFile = 're1.jpg'
 	
-	print matcher.match(carFile)
+	print matcher.match(sys.argv[1])
