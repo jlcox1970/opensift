@@ -29,7 +29,6 @@ int feat_type = FEATURE_LOWE;
 
 int main( int argc, char** argv )
 {
-  IplImage* img;
   struct feature* feat1, * feat2, * feat;
   struct feature** nbrs;
   struct kd_node* kd_root;
@@ -38,17 +37,15 @@ int main( int argc, char** argv )
   int n1, n2, k, i, m = 0;
 
   if( argc != 3 )
-    fatal_error( "usage: %s <feat_file> <img2>", argv[0] );
+    fatal_error( "usage: %s <feat_file> <feat_file>", argv[0] );
 
   n1 = import_features( argv[1], feat_type, &feat1 );
   if( n1 == -1 )
     fatal_error( "unable to import features from %s", argv[1] );
   
-  img = cvLoadImage( argv[2], 1 );
-  if( ! img )
-    fatal_error( "unable to load image from %s - $d", argv[2], img );
-  
-  n2 = sift_features( img, &feat2 );
+  n2 = import_features( argv[2], feat_type, &feat2 );
+  if( n2 == -1 )
+    fatal_error( "unable to import features from %s", argv[2] );
   
   kd_root = kdtree_build( feat2, n2 );
   for( i = 0; i < n1; i++ )
@@ -73,7 +70,6 @@ int main( int argc, char** argv )
 
   printf("%d\n", m );
 
-  cvReleaseImage( &img );
   kdtree_release( kd_root );
   free( feat1 );
   free( feat2 );

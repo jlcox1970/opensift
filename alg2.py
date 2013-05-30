@@ -20,6 +20,7 @@ class SiftMatcher:
 		self._features = dict()
 		self._addSifts()
 		self._comparator = 'bin/comp'
+		self._siftfeat = 'bin/siftfeat'
 
 	def _addSifts(self):
 		for fileOrDir in os.listdir(self._databaseDirectory):
@@ -46,11 +47,17 @@ class SiftMatcher:
 	
 	def match(self, filename):
 		matches = self._makeCompStructure()
+		basename = os.path.splitext(filename)[0]
+		devNull = open('/dev/null', 'w')
+		try:
+			subprocess.check_call([self._siftfeat, filename, '-o'+basename+'.sift', '-x'], stderr=devNull)
+		except subprocess.CalledProcessError:
+			pass
 		
 		for group, files in self._features.iteritems():
 			for file in files:
 				try:
-					val = int(subprocess.check_output([self._comparator, file, filename], stderr=subprocess.STDOUT).strip())
+					val = int(subprocess.check_output([self._comparator, file, basename+'.sift'], stderr=devNull).strip())
 					matches[group].add(val)
 				except subprocess.CalledProcessError:
 					pass
