@@ -1,5 +1,10 @@
 Intro
 =====
+Fork made for purposes of Knowledge-Based Systems course.
+
+
+Intro (OpenSIFT)
+=====
 
 This is a collection of code I've put together to detect SIFT features 
 in images and to use SIFT (or other) features to compute image 

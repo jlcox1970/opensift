@@ -5,9 +5,9 @@ SRC_DIR	= ./src
 DOC_DIR	= ./docs
 INC_DIR	= ./include
 LIB_DIR	= ./lib
-BIN	= siftfeat match dspfeat
+BIN	= siftfeat match dspfeat alg2
 
-all: $(BIN) libopensift.a docs
+all: $(BIN) libopensift.a
 
 docs:
 	doxygen Doxyfile
