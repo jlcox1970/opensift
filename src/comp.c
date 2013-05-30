@@ -48,10 +48,8 @@ int main( int argc, char** argv )
   if( ! img )
     fatal_error( "unable to load image from %s - $d", argv[2], img );
   
-  fprintf( stderr, "Finding features in %s...\n", argv[2] );
   n2 = sift_features( img, &feat2 );
   
-  fprintf( stderr, "Building kd tree...\n" );
   kd_root = kdtree_build( feat2, n2 );
   for( i = 0; i < n1; i++ )
     {
@@ -73,7 +71,7 @@ int main( int argc, char** argv )
       free( nbrs );
     }
 
-  fprintf( stderr, "Found %d total matches\n", m );
+  printf("%d\n", m );
 
   cvReleaseImage( &img );
   kdtree_release( kd_root );
