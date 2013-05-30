@@ -1,3 +1,11 @@
+/*
+  Return information about matched features of a sift file in an image.
+
+  Copyright (C) 2006-2012  Rob Hess <rob@iqengines.com>
+
+  @version 1.1.2-20100521
+*/
+
 #include "sift.h"
 #include "imgfeatures.h"
 #include "kdtree.h"
