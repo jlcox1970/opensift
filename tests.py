@@ -7,7 +7,6 @@ import threading, multiprocessing
 
 def runTestCase(threadLimiter, group, siftFile, filename):
 	threadLimiter.acquire()
-	print '.'
 	try:
 		result = matcher.match(filename)
 		print group, siftFile, result
