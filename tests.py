@@ -1,7 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, sys, subprocess
 from alg2 import SiftMatcher
+
+import os, sys, subprocess
+import threading
+
+def runTestCase(group, siftFile, filename):
+	result = matcher.match(filename)
+	print group, siftFile, result
+
 
 if __name__ == '__main__':
 	tests_dir = 'tests'
@@ -13,7 +20,7 @@ if __name__ == '__main__':
 		_fileOrDir = tests_dir + os.path.sep + fileOrDir
 		if os.path.isdir(_fileOrDir):
 			for siftFile in os.listdir(_fileOrDir):
-				if not siftFile.startswith('.'):
-					print fileOrDir,siftFile,
-					print matcher.match(_fileOrDir + os.path.sep  + siftFile)
+				if not siftFile.startswith('.') and not siftFile.endswith('.sift'):
+					thread = threading.Thread(target=runTestCase, args=(fileOrDir, siftFile, _fileOrDir + os.path.sep  + siftFile))
+					thread.start()
 
