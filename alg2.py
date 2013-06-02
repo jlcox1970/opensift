@@ -4,7 +4,7 @@ import os, sys, subprocess
 
 class Averager:
 	def __init__(self):
-		self._sum = 0
+		self._sum = 0.
 		self._count = 0
 		
 	def add(self, val):
@@ -12,7 +12,7 @@ class Averager:
 		self._count += 1
 	
 	def avg(self):
-		return self._sum / self._count if self._count > 0 else 0
+		return round(self._sum / self._count, 2) if self._count > 0 else 0
 
 class SiftMatcher:
 	def __init__(self, databaseDirectory):
@@ -30,7 +30,7 @@ class SiftMatcher:
 				for siftFile in os.listdir(_fileOrDir):
 					self._features[fileOrDir].append(_fileOrDir + os.path.sep  + siftFile)
 	
-	def _makeCompStructure(self):
+	def makeCompStructure(self):
 		compStructure = dict()
 		for key in self._features.iterkeys():
 			compStructure[key] = Averager()
@@ -46,7 +46,7 @@ class SiftMatcher:
 		return (bestGroupName, bestAvg)
 	
 	def match(self, filename):
-		matches = self._makeCompStructure()
+		matches = self.makeCompStructure()
 		basename = os.path.splitext(filename)[0]
 		devNull = open('/dev/null', 'w')
 		try:
