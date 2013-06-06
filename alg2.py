@@ -54,6 +54,14 @@ class SiftMatcher:
 					bestGroupName = group
 			return (bestGroupName, bestAvg)
 		elif strategy == 'stdev':
+			bestGroupName = None
+			bestAvg = -1;
+			for group, avg in matches.iteritems():
+				if avg.stdev() > bestAvg:
+					bestAvg = avg.stdev()
+					bestGroupName = group
+			return (bestGroupName, round(bestAvg, 2))
+		elif strategy == 'avg-stdev':
 			ranking = []
 			for group, avg in matches.iteritems():
 				ranking.append((group, avg))
@@ -62,6 +70,15 @@ class SiftMatcher:
 			ranking = [ (group, avg.stdev()) for group, avg in ranking[:3]]
 			ranking.sort(key=lambda tup: -tup[1])
 			return (ranking[0][0], round(ranking[0][1], 2))
+		elif strategy == 'stdev-avg':
+			ranking = []
+			for group, avg in matches.iteritems():
+				ranking.append((group, avg))
+			ranking.sort(key=lambda tup: -(tup[1]).stdev())
+			
+			ranking = [ (group, avg.avg()) for group, avg in ranking[:3]]
+			ranking.sort(key=lambda tup: -tup[1])
+			return (ranking[0][0], ranking[0][1])
 		else:
 			raise Exception('No strategy')
 	
