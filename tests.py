@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from alg2 import SiftMatcher, Averager
+from alg2 import SiftMatcher
 
 import os, sys, subprocess
 import threading, multiprocessing

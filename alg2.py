@@ -21,6 +21,8 @@ class Averager:
 			mean = self._sum / self._count
 			sum2 = sum([ (mean - x)**2 for x in self._array])
 			return math.sqrt(sum2 / self._count)
+	def maxVal(self):
+		return max(self._array) if len(self._array) > 0 else 0
 
 class SiftMatcher:
 	def __init__(self, databaseDirectory):
@@ -45,7 +47,15 @@ class SiftMatcher:
 		return compStructure
 	
 	def _findBestMatch(self, matches, strategy):
-		if strategy == 'avg':
+		if strategy == 'max':
+			bestGroupName = None
+			bestAvg = -1;
+			for group, avg in matches.iteritems():
+				if avg.maxVal() > bestAvg:
+					bestAvg = avg.maxVal()
+					bestGroupName = group
+			return (bestGroupName, bestAvg)
+		elif strategy == 'avg':
 			bestGroupName = None
 			bestAvg = -1;
 			for group, avg in matches.iteritems():
