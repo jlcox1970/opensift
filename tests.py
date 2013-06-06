@@ -6,8 +6,9 @@ import os, sys, subprocess
 import threading, multiprocessing
 
 class TestCase(threading.Thread):
-	def __init__(self, threadLimiter, matches, matcher, group, siftFile, filename):
+	def __init__(self, strategy, threadLimiter, matches, matcher, group, siftFile, filename):
 		super(TestCase, self).__init__()
+		self.strategy = strategy
 		self.threadLimiter = threadLimiter
 		self.matches = matches
 		self.matcher = matcher
@@ -18,12 +19,12 @@ class TestCase(threading.Thread):
 	def run(self):
 		self.threadLimiter.acquire()
 		try:
-			result = self.matcher.match(self.filename)
+			result = self.matcher.match(self.filename, self.strategy)
 			if self.group == result[0]:
 				self.matches[self.group].add(1)
 			else:
 				self.matches[self.group].add(0)
-			print self.group, self.siftFile, result
+			print self.group, result[0], result[1]
 		finally:
 			self.threadLimiter.release()
 		
@@ -32,8 +33,10 @@ if __name__ == '__main__':
 	tests_dir = 'tests'
 	databaseDirectory = 'CB'
 	
+	strategy = sys.argv[1] if len(sys.argv) == 2 else 'avg'
+	
 	matcher = SiftMatcher(databaseDirectory)
-	threadLimiter = threading.BoundedSemaphore(multiprocessing.cpu_count())
+	threadLimiter = threading.BoundedSemaphore(multiprocessing.cpu_count()/2)
 	matches = matcher.makeCompStructure()
 	threads = []
 	
@@ -45,7 +48,7 @@ if __name__ == '__main__':
 		if os.path.isdir(_fileOrDir):
 			for siftFile in os.listdir(_fileOrDir):
 				if not siftFile.startswith('.') and not siftFile.endswith('.sift'):
-					thread = TestCase(threadLimiter, matches, matcher, fileOrDir, siftFile, _fileOrDir + os.path.sep  + siftFile)
+					thread = TestCase(strategy, threadLimiter, matches, matcher, fileOrDir, siftFile, _fileOrDir + os.path.sep  + siftFile)
 					thread.start()
 					threads.append(thread)
 	

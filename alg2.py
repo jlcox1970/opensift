@@ -1,18 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, sys, subprocess
+import os, sys, subprocess, math
 
 class Averager:
 	def __init__(self):
 		self._sum = 0.
 		self._count = 0
+		self._array = []
 		
 	def add(self, val):
 		self._sum += val
+		self._array.append(val)
 		self._count += 1
 	
 	def avg(self):
 		return round(self._sum / self._count, 2) if self._count > 0 else 0
+	
+	def stdev(self):
+		if self._count > 0:
+			mean = self._sum / self._count
+			sum2 = sum([ (mean - x)**2 for x in self._array])
+			return math.sqrt(sum2 / self._count)
 
 class SiftMatcher:
 	def __init__(self, databaseDirectory):
@@ -36,16 +44,28 @@ class SiftMatcher:
 			compStructure[key] = Averager()
 		return compStructure
 	
-	def _findBestMatch(self, matches):
-		bestGroupName = None
-		bestAvg = -1;
-		for group, avg in matches.iteritems():
-			if avg.avg() > bestAvg:
-				bestAvg = avg.avg()
-				bestGroupName = group
-		return (bestGroupName, bestAvg)
+	def _findBestMatch(self, matches, strategy):
+		if strategy == 'avg':
+			bestGroupName = None
+			bestAvg = -1;
+			for group, avg in matches.iteritems():
+				if avg.avg() > bestAvg:
+					bestAvg = avg.avg()
+					bestGroupName = group
+			return (bestGroupName, bestAvg)
+		elif strategy == 'stdev':
+			ranking = []
+			for group, avg in matches.iteritems():
+				ranking.append((group, avg))
+			ranking.sort(key=lambda tup: -(tup[1]).avg())
+			
+			ranking = [ (group, avg.stdev()) for group, avg in ranking[:3]]
+			ranking.sort(key=lambda tup: -tup[1])
+			return (ranking[0][0], round(ranking[0][1], 2))
+		else:
+			raise Exception('No strategy')
 	
-	def match(self, filename):
+	def match(self, filename, strategy = 'avg'):
 		matches = self.makeCompStructure()
 		basename = os.path.splitext(filename)[0]
 		devNull = open('/dev/null', 'w')
@@ -63,7 +83,7 @@ class SiftMatcher:
 				except subprocess.CalledProcessError:
 					pass
 		os.remove(basename + '.sift')
-		return self._findBestMatch(matches)
+		return self._findBestMatch(matches, strategy)
 
 
 if __name__ == '__main__':
