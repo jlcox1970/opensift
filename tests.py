@@ -36,7 +36,7 @@ if __name__ == '__main__':
 	strategy = sys.argv[1] if len(sys.argv) == 2 else 'avg'
 	
 	matcher = SiftMatcher(databaseDirectory)
-	threadLimiter = threading.BoundedSemaphore(multiprocessing.cpu_count()/2)
+	threadLimiter = threading.BoundedSemaphore(multiprocessing.cpu_count()-1)
 	matches = matcher.makeCompStructure()
 	threads = []
 	
