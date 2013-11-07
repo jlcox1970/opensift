@@ -5,6 +5,7 @@ SRC_DIR	= ./src
 DOC_DIR	= ./docs
 INC_DIR	= ./include
 LIB_DIR	= ./lib
+INSTALL_DIR = /usr/local/bin
 BIN	= siftfeat match dspfeat comp
 
 all: $(BIN) libopensift.a
@@ -28,5 +29,8 @@ distclean: clean
 
 docsclean:
 	rm -rf $(DOC_DIR)/html/
+
+install:
+	cp -fv $(BIN_DIR)/* $(INSTALL_DIR)/
 
 .PHONY: docs clean docsclean libopensift.a
